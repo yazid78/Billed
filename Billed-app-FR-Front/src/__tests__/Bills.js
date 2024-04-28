@@ -65,3 +65,34 @@ describe("Bills container", () => {
   });
 });
 
+
+
+const mockStore = {
+  bills: jest.fn().mockReturnThis(),
+  list: jest.fn().mockResolvedValue([]), 
+};
+
+describe('Bills container', () => {
+  test('getBills should return the correct number of bills', async () => {
+
+    const numberOfBills = 26;
+
+
+    mockStore.bills().list.mockResolvedValue(new Array(numberOfBills));
+
+ 
+    const billsContainer = new Bills({
+      document: document,
+      onNavigate: jest.fn(),
+      store: mockStore,
+      localStorage: {},
+    });
+
+ 
+    const bills = await billsContainer.getBills();
+
+    expect(mockStore.bills().list).toHaveBeenCalled();
+
+    expect(bills).toHaveLength(numberOfBills);
+  });
+});
