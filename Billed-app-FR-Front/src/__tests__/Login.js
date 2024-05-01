@@ -227,4 +227,25 @@ describe("Given that I am a user on login page", () => {
       expect(screen.queryByText("Validations")).toBeTruthy();
     });
   });
+ 
+  describe("When I do fill fields in incorrect format and I click on admin button Login In", () => {
+    test("Then it should renders Login page", () => {
+      document.body.innerHTML = LoginUI();
+
+      const inputEmailUser = screen.getByTestId("admin-email-input");
+      fireEvent.change(inputEmailUser, { target: { value: "pasunemail" } });
+      expect(inputEmailUser.value).toBe("pasunemail");
+
+      const inputPasswordUser = screen.getByTestId("admin-password-input");
+      fireEvent.change(inputPasswordUser, { target: { value: "azerty" } });
+      expect(inputPasswordUser.value).toBe("azerty");
+
+      const form = screen.getByTestId("form-admin");
+      const handleSubmit = jest.fn((e) => e.preventDefault());
+
+      form.addEventListener("submit", handleSubmit);
+      fireEvent.submit(form);
+      expect(screen.getByTestId("form-admin")).toBeTruthy();
+    });
+  });
 });

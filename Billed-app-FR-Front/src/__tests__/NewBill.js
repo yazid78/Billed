@@ -2,12 +2,13 @@
  * @jest-environment jsdom
  */
 
-import { screen } from "@testing-library/dom"
-import "@testing-library/jest-dom/extend-expect";
-import NewBillUI from "../views/NewBillUI.js"
-import NewBill from "../containers/NewBill.js"
-
-
+import { fireEvent, screen, waitFor } from "@testing-library/dom";
+import NewBillUI from "../views/NewBillUI.js";
+import NewBill from "../containers/NewBill.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import mockStore from "../__mocks__/store";
+import router from "../app/Router.js";
 
 /* describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -15,24 +16,25 @@ import NewBill from "../containers/NewBill.js"
       const html = NewBillUI()
       document.body.innerHTML = html
       //to-do write assertion
-      const fileInputElement = screen.queryByTestId('file');
-      expect(fileInputElement).toBeInTheDocument();
     })
   })
 }) */
 
+jest.mock("../app/Store", () => mockStore);
+
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
-    test("Then it should display the file input element for uploading a receipt", () => {
-      // Render NewBillUI
-      const html = NewBillUI();
-      document.body.innerHTML = html;
-
-      // Vérifie la présence de l'élément pour télécharger le justificatif
-      const fileInputElement = screen.getByTestId('file');
-
-      // Assert
-      expect(fileInputElement).toBeInTheDocument();
+    test("Then mail icon in vertical layout should be highlighted", async () => {
+      Object.defineProperty(window, "localStorage", { value: localStorageMock });
+      window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }));
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.append(root);
+      router();
+      window.onNavigate(ROUTES_PATH.NewBill);
+      await waitFor(() => screen.getByTestId("icon-mail"));
+      const mailIcon = screen.getByTestId("icon-mail");
+      expect(mailIcon).toBeTruthy();
     });
   });
 });

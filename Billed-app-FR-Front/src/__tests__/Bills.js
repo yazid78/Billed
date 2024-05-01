@@ -12,9 +12,7 @@ describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
+      window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
@@ -63,7 +61,7 @@ describe("Bills container", () => {
       list: jest.fn().mockResolvedValue([]),
     };
 
-    const numberOfBills = 26;
+    const numberOfBills = 3;
     mockStore.bills().list.mockResolvedValue(new Array(numberOfBills));
 
     const billsContainer = new Bills({
